@@ -25,27 +25,26 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var sessionObject = session({
-  name: "session",
-  secret: "secret",
-  resave: true,
-  // rolling ensures the cookie refreshes after the cookie expires
-  rolling: true,
-  saveUninitialized: false,
+  name: "session", // name for our session cookie
+  secret: "secret", // secret for signing the session cookie
+  resave: true, // force save the cookie again on each request
+  rolling: true,  // rolling ensures the cookie refreshes after the cookie expires
+  saveUninitialized: false, // only save after we gather required data from the user
   store: MongoStore.create({
-      mongoUrl: "mongodb+srv://expressbootcamp8:test@cluster0.xtdz3pi.mongodb.net/",
-      collectionName: "sessions",
+      mongoUrl: "mongodb+srv://expressbootcamp8:test@cluster0.xtdz3pi.mongodb.net/", //save the cookie in our db
+      collectionName: "sessions", // this will be our collection name in the db
   }),
   cookie: {
-      maxAge: 1000*60*60*24, //millisecond
-      httpOnly: true,
+      maxAge: 1000*60*60*24, // expires after 1 day
+      httpOnly: true, // can only be accessed via http
   }, 
 });
 
-app.use(sessionObject);
+app.use(sessionObject); // allows express to use this session
 
-app.use(passport.authentication("session"));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate("session")); // passport will use sessions to store user details
+app.use(passport.initialize()); // initialize passport 
+app.use(passport.session()); // this will authenticate each request and populate it with user details
 
 passport.serializeUser(function (user, cb) {
   process.nextTick(function () {
