@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 var MongoClient = require("mongodb").MongoClient;
+var ObjectId = require("mongodb").ObjectId;
 
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
@@ -44,6 +45,13 @@ router.get("/auth/google/callback", passport.authenticate("google", {
   failureRedirect: "/"
 }))
 
+router.get("/logout", function(req, res, next){
+  req.logout(function(){
+    console.log("Logged out successfully")
+  });
+  res.redirect("/")
+})
+
 /* GET home page. */
 router.get("/", async function (req, res, next) {
 
@@ -66,7 +74,15 @@ router.get("/createProduct", function(req, res, next){
   res.render("createProduct");
 });
 
-router.post("/createProduct", async function(req, res, next){
+router.post("/createProduct", function(req, res, next){
+
+  if(req.isAuthenticated()){
+    next();
+  }else{
+    res.send("You are not authenticated")
+  }
+
+}, async function(req, res, next){
   var client = await MongoClient.connect(
     "mongodb+srv://expressbootcamp8:test@cluster0.xtdz3pi.mongodb.net/"
   );
@@ -78,10 +94,68 @@ router.post("/createProduct", async function(req, res, next){
     name: req.body.name,
     price: parseInt(req.body.price),
     photo: req.body.photo,
-    description: req.body.description
+    description: req.body.description,
+    email: req.user.email
   });
 
-  res.send("Working")
-})
+  res.redirect("/home");
+
+});
+
+router.get("/home", async function(req, res, next){
+  var client = await MongoClient.connect(
+    "mongodb+srv://expressbootcamp8:test@cluster0.xtdz3pi.mongodb.net/"
+  );
+  var db = client.db("mydb");
+  var collection = db.collection("products");
+
+  var products = await collection.find({}).toArray();
+  console.log(products)
+
+  var user = req.user;
+  if (user==undefined){
+    user = {
+      name: "",
+      email: "guest"
+    }
+  }
+
+  res.render("home", {
+    products: products,
+    user: user
+  });
+});
+
+router.post("/deleteProduct/:product_id", function(req, res, next){
+
+  if(req.isAuthenticated()){
+    next();
+  }else{
+    res.send("You are not authenticated")
+  }
+
+}, async function(req, res, next){
+
+  var client = await MongoClient.connect(
+    "mongodb+srv://expressbootcamp8:test@cluster0.xtdz3pi.mongodb.net/"
+  );
+  var db = client.db("mydb");
+  var collection = db.collection("products");
+
+  var product = await collection.findOne({
+    _id : new ObjectId(req.params.product_id)
+  })
+
+  if(product.email == req.user.email){
+    await collection.deleteOne({
+      _id: new ObjectId(req.params.product_id)
+    });
+  
+    res.redirect("/home")
+  }else{
+    res.send("You don't have permissions to delete this file")
+  }
+
+});
 
 module.exports = router;

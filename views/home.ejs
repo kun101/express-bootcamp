@@ -1,0 +1,16 @@
+Home
+<br>
+User Logged in : <%= user.email %>
+<br>
+Create Product: <a href="/createProduct">Create Product</a>
+
+<% products.forEach(function(item){ %>
+
+    <h5><%= item.name %></h5>
+    <p><%= item.description %></p>
+    <form action="/deleteProduct/<%= item._id %>" method="post">
+        <button type="submit">Delete Product</button>
+    </form>
+    <hr>
+
+<% }); %>
