@@ -1,0 +1,7 @@
+<form action="/updateProduct/<%= product._id %>" method="post">
+    <input type="text" name="name" placeholder="Product Name" value="<%= product.name %>"><br>
+    <input type="number" name="price" placeholder="Product Price" value="<%= product.price %>"><br>
+    <input type="text" name="photo" placeholder="Product Photo" value="<%= product.photo %>"><br>
+    <input type="text" name="description" placeholder="Product Description" value="<%= product.description %>"><br>
+    <button type="submit">Submit</button>
+</form>

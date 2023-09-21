@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require("dotenv").config();
 
 var MongoStore = require("connect-mongo");
 
@@ -31,7 +32,7 @@ var sessionObject = session({
   rolling: true,  // rolling ensures the cookie refreshes after the cookie expires
   saveUninitialized: false, // only save after we gather required data from the user
   store: MongoStore.create({
-      mongoUrl: "mongodb+srv://expressbootcamp8:test@cluster0.xtdz3pi.mongodb.net/", //save the cookie in our db
+      mongoUrl: process.env["MONGO_URL"], //save the cookie in our db
       collectionName: "sessions", // this will be our collection name in the db
   }),
   cookie: {

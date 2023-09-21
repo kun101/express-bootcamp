@@ -8,6 +8,9 @@ Create Product: <a href="/createProduct">Create Product</a>
 
     <h5><%= item.name %></h5>
     <p><%= item.description %></p>
+    <form action="/updateProduct/<%= item._id %>" method="get">
+        <button type="submit">Update Product</button>
+    </form>
     <form action="/deleteProduct/<%= item._id %>" method="post">
         <button type="submit">Delete Product</button>
     </form>
