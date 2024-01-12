@@ -1,19 +1,63 @@
-Home
-<br>
-User Logged in : <%= user.email %>
-<br>
-Create Product: <a href="/createProduct">Create Product</a>
+<html>
 
-<% products.forEach(function(item){ %>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product Listing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
 
-    <h5><%= item.name %></h5>
-    <p><%= item.description %></p>
-    <form action="/updateProduct/<%= item._id %>" method="get">
-        <button type="submit">Update Product</button>
-    </form>
-    <form action="/deleteProduct/<%= item._id %>" method="post">
-        <button type="submit">Delete Product</button>
-    </form>
-    <hr>
+<body>
 
-<% }); %>
+    <div class="container">
+
+        <div class="row mt-5">
+            <div class="col-6">
+                <h3>Home</h3>
+                <p class="text-muted"><%= user.email %></p>
+            </div>
+
+            <div class="col-6">
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-primary me-2" href="/createProduct">Create Product</a>
+                    <a class="btn btn-outline-danger" href="/users/logout">Logout</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <% products.forEach(function(item){ %>
+
+            <div class="col-4 mb-3">
+
+                <div class="card">
+                    <img src="<%= item.photo %>" class="card-img-top" style="max-height: 200px;object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= item.name %></h5>
+                        <p class="card-text"><%= item.description %></p>
+                        <div class="d-flex">
+                            <form action="/updateProduct/<%= item._id %>" method="get" class="me-2">
+                                <button class="btn btn-primary" type="submit">Update Product</button>
+                            </form>
+                            <form action="/deleteProduct/<%= item._id %>" method="post">
+                                <button class="btn btn-outline-danger" type="submit">Delete Product</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <% }); %>
+        </div>
+
+    </div>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+</script>
+
+</html>
